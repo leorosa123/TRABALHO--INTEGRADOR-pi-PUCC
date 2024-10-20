@@ -19,10 +19,17 @@ cursor = mySql.connection.cursor() # Cursor do SQL --> usados to execute
 @app.route('/')
 def index():
     return render_template('index.html')
+
 # CRUD de informacoes dos usuarios
+
 # Tomada de customizacoes dentro do site para menu e afins
+
 # Validacao do login e informacoes
+
 # Tomada dos horarios e psicologos disponiveis dentro do banco
+
 # CRUD agendamento
+
 # Tomada de realizacao dentro do banco de dados
+
 # Tomada de seguranca dentro da pagina
