@@ -6,8 +6,6 @@ import json
 # Importing packeges and necessary functions
 from client import loggedClient
 import validacoes
-from dbConnection import app
-
-mySql = MySQL(app) # SQL Connection
+from dbConnection import mySql
 
 cursor = mySql.connection.cursor()
