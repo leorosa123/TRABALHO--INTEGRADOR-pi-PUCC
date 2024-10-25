@@ -19,11 +19,11 @@
       <header style="background-color: #fff;">
         <a href="#" class="logo"><img src="../confg/S.A.D.png" alt="" width="500px" height="500px"></a>
         <ul class="navbar">
-            <li><a href="#" class="active">Home</a></li>
-            <li><a href="#">Sobre nós</a></li>
-            <li><a href="#">Serviços</a></li>
-            <li><a href="#">Contato</a></li>
-            <button>Agendamentos</button>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#Sobre">Sobre nós</a></li>
+            <li><a href="index.html#Servicos">Serviços</a></li>
+            <li><a href="index.html#Contato">Contato</a></li>
+            <a href="agendamento.html"><button>Agendamentos</button></a>
           
         </ul>
         <div class="main-acessos">
@@ -38,25 +38,27 @@
       <form class="form">
         <p class="form-title">Faça seu cadastro</p>
         <div class="input-container">
-          <input type="text" placeholder="Ex: João pedro">
+          <label for="name">Nome</label>
+          <input type="text" placeholder="Ex: João pedro" name="name">
           <span>
           </span>
-      </div>
-          <div class="input-container">
-            <input type="email" placeholder="Ex: joao@gmail.com">
+        </div>
+        <div class="input-container">
+            <label for="email">Email</label>
+            <input type="email" placeholder="Ex: joao@gmail.com" name="email">
             <span>
             </span>
         </div>
         <div class="input-container">
-            <input type="password" placeholder="Ex: ###-####">
+          <label for="pass">Senha</label>
+          <input type="password" placeholder="Ex: ###-####" name="pass">
           </div>
           <button type="submit" class="submit">
           Cadastrar
-        </button>
-
+          </button>
         <p class="signup-link">
           possui uma conta?
-          <a href="">Logar</a>
+          <a href="login.user.html">Logar</a>
         </p>
       </form>
     </div>

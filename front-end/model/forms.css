@@ -1,10 +1,13 @@
 /* From Uiverse.io by nathann09 */ 
 
 body{
-    background-image: url("../confg/patrick-tomasso-QMDap1TAu0g-unsplash.jpg");
+    background-image: linear-gradient(90deg, rgb(119, 31, 119), rgb(66, 8, 226));
     background-size: cover;
     background-repeat: no-repeat;
    
+}
+.cont{
+  margin: 10%;
 }
 .form {
     background-color: #fff;
