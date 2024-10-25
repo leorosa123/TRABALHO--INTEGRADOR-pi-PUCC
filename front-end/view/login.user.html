@@ -3,15 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../model/login.css">
-    <title>LoginDisplay</title>
+    <link rel="stylesheet" href="../model/forms.css">
+    <title>Login</title>
 </head>
 <body>
-    <form action="" method="post" class="forms">
-        <input type="text" name="user" id="loginForm" placeholder="Email ou CPF">
-        <input type="password" name="password" id="loginPass">
-        <input type="button" action="" value="" class="button" id="formBtn">
-        <a href="" class="linkFormat" id="forgotPass">Esqueci a senha</a> 
-    </form>
+    <form class="form">
+       <p class="form-title">Login</p>
+        <div class="input-container">
+            <label for="name">User</label>
+            <input name="name" type="text" placeholder="Ex: email@gmail.com o CPF">
+        </div>
+        <div class="input-container">
+            <label for="pass">Senha</label>
+            <input type="password" placeholder="Ex: ###-####" name="pass">
+        </div>
+        <button type="submit" class="submit">
+        Entrar
+        </button>
+
+        <p class="signup-link">
+            <a href="">Esqueci a senha</a>
+        </p>
+   </form>
 </body>
 </html>
