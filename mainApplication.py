@@ -10,17 +10,12 @@ app = Flask(__name__)
 def index():
     return render_template('../front-end/view/index.html')
 
-# Rota para receber dados via POST do JavaScript
-@app.route('/enviar', methods=['POST'])
+# POST for js
+@app.route('/api/dados', methods=['POST'])
 def enviar_dados():
     # Pegando as informacoes dentro do json
-    data = request.get_json()
-    nome = data.get('nome')
-    email = data.get('email')
+    return jsonify()
 
-    # Jogando as informacoes dentro do banco de dados
-
-    return jsonify({'message': 'Dados salvos com sucesso!'})
 
 if __name__ == '__main__':
     app.run(debug=True)
