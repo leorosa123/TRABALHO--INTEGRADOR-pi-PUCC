@@ -1,3 +1,5 @@
+section = new Map()
+
 // Recebendo post do python -> Validacao dos dados e admissao do client
 function searchData(){
     fetch("/api/data")
@@ -12,6 +14,11 @@ function searchData(){
 }
 
 // Restricoes de login
+function setUpPriviledges(){
+
+
+
+}
 // Reabilitacao das restricoes
 // Mudanca de pagina com o login
 // Post para o python -> inserir dados
