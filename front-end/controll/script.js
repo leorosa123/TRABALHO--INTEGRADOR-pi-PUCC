@@ -1,3 +1,4 @@
+// Modify this to search for any type of data
 // Função para buscar os dados da API
 async function carregarClientes() {
     try {
@@ -47,6 +48,10 @@ function searchData(){
 function setUpPriviledges(){
 
 
+
+}
+
+async function showUpPsicologies(){
 
 }
 // Reabilitacao das restricoes
