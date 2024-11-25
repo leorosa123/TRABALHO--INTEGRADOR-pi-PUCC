@@ -54,7 +54,16 @@ function setUpPriviledges(){
 async function showUpPsicologies(){
 
 }
-// Reabilitacao das restricoes
-// Mudanca de pagina com o login
-// Post para o python -> inserir dados
-// Post para o python -> transformar dados
+// Post de json para o python
+// Inserir novos dados
+// Atualizar dados presentes
+// Delete de dados
+// Assimilacao dos dados e identificacao de informacoes
+// Login e autenticacao
+
+// Definir os objetos dentro da pagina
+// Definir asespecificacoes dentro da pagina --> footer e header
+// Identificar o login e o status da conexao dentro do servidor
+// Assimilar as informacoes da pagina --> alteracoes com o login e as restricoes necessarias dentro da pagina
+
+// Criptografia dos dados para o python
