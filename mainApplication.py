@@ -1,52 +1,59 @@
-from flask import Flask, render_template, request, jsonify
-from flask_mysqldb import MySQL
-from dbConnection import mySql
+from flask import Flask, request, jsonify
+import pymysql
 
 app = Flask(__name__)
 
-# Rota para renderizar o formulário
-@app.route('/')
-def index():
-    return render_template('../front-end/view/index.html')
+# Conexão com o banco de dados
+def get_db_connection():
+    return pymysql.connect(
+        host='localhost',
+        user='root',
+        password='',
+        database='bancodedadoshope'
+    )
 
-# API para obter dados do cliente
-@app.route('/api/clientes', methods=['GET'])
-def get_clientes():
-    cursor = mySql.connection.cursor()
-    query = """
-    SELECT 
-        pacientes.pacienteID, 
-        pacientes.nomePaciente, 
-        pacientes.dataNascPaciente, 
-        pacientes.pacienteCPF, 
-        pacientes.fotoPaciente,
-        login.email,
-        login.senha
-    FROM 
-        pacientes
-    LEFT JOIN 
-        login
-    ON 
-        pacientes.pacienteID = login.userID;
-    """
-    cursor.execute(query)
-    result = cursor.fetchall()
+# Rota para login
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data.get('email')
+    senha = data.get('senha')
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM login JOIN pacientes ON login.userID = pacientes.pacienteID WHERE email=%s AND senha=%s", (email, senha))
+    user = cursor.fetchone()
+    conn.close()
+    
+    if user:
+        return jsonify({
+            "pacienteID": user[0],
+            "nomePaciente": user[1],
+            "dataNascPaciente": user[2],
+            "pacienteCPF": user[3],
+            "email": email
+        })
+    else:
+        return jsonify({"error": "Credenciais inválidas"}), 401
 
-    # Formatando os resultados em JSON
-    clientes = [
-        {
-            "id": row[0],
-            "nome": row[1],
-            "dataNascimento": row[2],
-            "cpf": row[3],
-            "foto": row[4],
-            "email": row[5],
-            "senha": row[6]
-        }
-        for row in result
-    ]
-    cursor.close()
-    return jsonify(clientes)
+# Rota para listar psicólogos
+@app.route('/psicologos', methods=['GET'])
+def get_psicologos():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM psicologos")
+    psicologos = cursor.fetchall()
+    conn.close()
+    return jsonify(psicologos)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Rota para agendamento
+@app.route('/agendar', methods=['POST'])
+def agendar():
+    data = request.json
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO consulta (pacienteID, psicologoID, dataHoraConsulta) VALUES (%s, %s, %s)",
+                   (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
+    conn.commit()
+    conn.close()
+    return jsonify({"message": "Consulta agendada com sucesso!"})
