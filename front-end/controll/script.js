@@ -1,5 +1,3 @@
-// Arquivo: main.js
-
 // Objeto para Menu e Footer
 const Layout = {
     addHeader: function() {
@@ -164,13 +162,26 @@ const Usuario = {
     }
 };
 
+// Exibindo os psicologos
+const psicologos = {
+    showUpPsicologies: async function(){
+        const profissionaisPsicologos = JSON.parse(localStorage.getItem("Psicologos"));
+        if (!profissionaisPsicologos){
+            // Dont show any one
+        }
+        for (i = 0; i < length(profissionaisPsicologos); i++){
+            // Colocar a estrutura da amostragem dos psicologos
+        }
+    }
+}
+
 // Inicializar Layout
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", () => {
     Layout.addHeader();
     Layout.addFooter();
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-        document.getElementById("userLink").innerText = `Olá, ${user.nomePaciente}`;
-    }
-});
+})
+
+document.addEventListenes("", function(){
+
+})
 
