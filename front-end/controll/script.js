@@ -4,17 +4,124 @@
 const Layout = {
     addHeader: function() {
         document.querySelector("header").innerHTML = `
-            <nav>
-                <a href="index.html">Home</a>
-                <a href="psicologos.html">Psicólogos</a>
-                <a href="agendamento.html">Agendamento</a>
-                <a href="login.html" id="userLink">Login</a>
-            </nav>
+            <!--Inicio do Header-->
+            <header style="background-color: #fff;">
+                <a href="#" class="logo"><img src="../confg/S.A.D.png" alt="" width="500px" height="500px"></a>
+                    <ul class="navbar">
+                        <li><a href="#" class="active">Home</a></li>
+                        <li><a href="#Sobre">Sobre nós</a></li>
+                        <li><a href="#Servicos">Serviços</a></li>
+                        <li><a href="#Contato">Contato</a></li>
+                        <li><a href="userInformation.html">Minha conta</a></li>
+                    <a href="agendamento.html"><button>Agendamentos</button></a>
+                    </ul>
+                <div class="main-acessos">
+                    <a href="login.user.html" class="login"><i class="ri-user-fill"></i>Login</a>
+                    <a href="cadastro.user.html" class="Cadastro">/ Cadastro</a>
+                </div>
+            </header>
+            <!--Fim do Header-->
         `;
     },
     addFooter: function() {
         document.querySelector("footer").innerHTML = `
-            <p>&copy; 2024 Hope. Todos os direitos reservados.</p>
+            <!-- Footer -->
+            <footer class="text-center text-lg-start bg-body-tertiary text-muted" id="Contato">
+            <!-- Section: Social media -->
+            <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+                <!-- Left -->
+                <div class="me-5 d-none d-lg-block fw-bold">
+                <span>Meios de Contato e conexão</span>
+                </div>
+                <!-- Left -->
+            </section>
+            <!-- Section: Social media -->
+
+            <!-- Section: Links  -->
+            <section>
+                <div class="container text-center text-md-start mt-5">
+                <!-- Grid row -->
+                <div class="row mt-3">
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                    <!-- Content -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        <i class="fas fa-gem me-3"></i>Agency S.A.D
+                    </h6>
+                    <p>
+                        Buscamos soluções inteligêntes e humanizadas para melhorar a saúde mental e bem estar de pessoas com ploblemas cotidianos reais.
+                    </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4 menu-footer">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        Menu
+                    </h6>
+                    <p>
+                        <a href="#!" class="text-reset">Home</a>
+                    </p>
+                    <p>
+                        <a href="#!" class="text-reset">Quem Somos</a>
+                    </p>
+                    <p>
+                        <a href="#!" class="text-reset">Serviços</a>
+                    </p>
+                    <p>
+                        <a href="#!" class="text-reset">Contato</a>
+                    </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4 servicos-footer">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        Soluções
+                    </h6>
+                    <p>
+                        <a href="#!" class="text-reset">Reuniões</a>
+                    </p>
+                    <p>
+                        <a href="#!" class="text-reset">Ligações</a>
+                    </p>
+                    <p>
+                        <a href="#!" class="text-reset">Relatórios</a>
+                    </p>
+                    <p>
+                        <a href="#!" class="text-reset">Jogos</a>
+                    </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4">Contato</h6>
+                    <p><i class="fas fa-home me-3"></i> São Paulo, Nova paulista 10012, BR</p>
+                    <p>
+                        <i class="fas fa-envelope me-3"></i>
+                        atendimentosad@gmail.com
+                    </p>
+                    <p><i class="fas fa-phone me-3"></i> + 55 19 9234 3333</p>
+                    <p><i class="fas fa-print me-3"></i> + 55 19 2198 4422</p>
+                    </div>
+                    <!-- Grid column -->
+                </div>
+                <!-- Grid row -->
+                </div>
+            </section>
+            <!-- Section: Links  -->
+
+            <!-- Copyright -->
+            <div class="text-center p-4" style="background-color: rgba(87, 87, 87, 0.05);">
+            <b>  © 2024 Copyright alunos da Pontifícia Universidade Católica de Campinas </b>
+            </div>
+            <!-- Copyright -->
+            </footer>
+            <!-- Footer -->
         `;
     }
 };
