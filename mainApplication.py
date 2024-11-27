@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import pymysql
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='./front-end/view')
 
 # Conexão com o banco de dados
 def get_db_connection():
@@ -11,6 +11,11 @@ def get_db_connection():
         password='',
         database='bancodedadoshope'
     )
+
+# Running main page
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 # Rota para login
 @app.route('/login', methods=['POST'])
@@ -57,3 +62,6 @@ def agendar():
     conn.commit()
     conn.close()
     return jsonify({"message": "Consulta agendada com sucesso!"})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True)
