@@ -8,7 +8,7 @@ def get_db_connection():
     return pymysql.connect(
         host='localhost',
         user='root',
-        password='RiCK20052020.com.br',
+        password='',
         database='bancodedadoshope'
     )
 
