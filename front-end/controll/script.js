@@ -6,16 +6,16 @@ const Layout = {
             <header style="background-color: #fff;">
                 <a href="#" class="logo"><img src="../confg/S.A.D.png" alt="" width="500px" height="500px"></a>
                     <ul class="navbar">
-                        <li><a href="#" class="active">Home</a></li>
-                        <li><a href="#Sobre">Sobre nós</a></li>
-                        <li><a href="#Servicos">Serviços</a></li>
-                        <li><a href="#Contato">Contato</a></li>
-                        <li><a href="userInformation.html">Minha conta</a></li>
-                    <a href="agendamento.html"><button>Agendamentos</button></a>
+                        <li><a href="../view/index.html" class="active">Home</a></li>
+                        <li><a href="../view/index.html#Sobre">Sobre nós</a></li>
+                        <li><a href="../view/index.html#Servicos">Serviços</a></li>
+                        <li><a href="../view/index.html#Contato">Contato</a></li>
+                        <li><a href="../view/userInformation.html">Minha conta</a></li>
+                    <a href="../view/agendamento.html"><button>Agendamentos</button></a>
                     </ul>
                 <div class="main-acessos">
-                    <a href="login.user.html" class="login"><i class="ri-user-fill"></i>Login</a>
-                    <a href="cadastro.user.html" class="Cadastro">/ Cadastro</a>
+                    <a href="../view/login.user.html" class="login"><i class="ri-user-fill"></i>Login</a>
+                    <a href="../view/cadastro.user.html" class="Cadastro">/ Cadastro</a>
                 </div>
             </header>
             <!--Fim do Header-->
@@ -165,12 +165,17 @@ const Usuario = {
 // Exibindo os psicologos
 const psicologos = {
     showUpPsicologies: async function(){
-        const profissionaisPsicologos = JSON.parse(localStorage.getItem("Psicologos"));
+        const profissionaisPsicologos = JSON.parse(localStorage.getItem("psicologos"));
         if (!profissionaisPsicologos){
-            // Dont show any one
+            document.getElementById("psicologos").innerHTML = 
+            `
+            
+            `
         }
         for (i = 0; i < length(profissionaisPsicologos); i++){
             // Colocar a estrutura da amostragem dos psicologos
+            const psicologo = document.createElement("div");
+            document.getElementById("psicologos").appendChild(psicologo)
         }
     }
 }
@@ -181,7 +186,4 @@ document.addEventListener("DOMContentLoaded", () => {
     Layout.addFooter();
 })
 
-document.addEventListenes("", function(){
-
-})
-
+// Funcao para ao clicar no botao ir para agendamento

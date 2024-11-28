@@ -26,7 +26,7 @@ def login():
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM login JOIN pacientes ON login.userID = pacientes.pacienteID WHERE email=%s AND senha=%s", (email, senha))
+    cursor.execute("SELECT p.pacienteID, p.nomePaciente, p.dataNascPaciente, p.pacienteCPF, l.email FROM login l JOIN pacientes p ON login.userID = pacientes.pacienteID WHERE email=%s AND senha=%s", (email, senha))
     user = cursor.fetchone()
     conn.close()
     
