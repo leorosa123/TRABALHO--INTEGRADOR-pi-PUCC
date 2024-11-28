@@ -193,7 +193,7 @@ h2{
 
 .btn-ligar{
     background-color: rgb(106, 24, 153);
-    border: none;
+    border: solid 1.5px rgb(106, 24, 153);
     border-radius: 50px;
 }
 
@@ -214,6 +214,14 @@ h2{
 
 .servicos-footer a{
     text-decoration: none;
+}
+
+.titlePsicologos{
+    font-family: Arial, Helvetica, sans-serif;
+    justify-content: center;
+    font-weight: 700;
+    font-size: xx-large;
+    text-align: center;
 }
 
 

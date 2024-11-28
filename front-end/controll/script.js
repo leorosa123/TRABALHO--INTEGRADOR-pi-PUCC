@@ -1,3 +1,4 @@
+// Interation with page --> acording to data and structure reuse
 // Objeto para Menu e Footer
 const Layout = {
     addHeader: function() {
@@ -10,10 +11,10 @@ const Layout = {
                         <li><a href="../view/index.html#Sobre">Sobre nós</a></li>
                         <li><a href="../view/index.html#Servicos">Serviços</a></li>
                         <li><a href="../view/index.html#Contato">Contato</a></li>
-                        <li><a href="../view/userInformation.html">Minha conta</a></li>
+                        <li></li>
                     <a href="../view/agendamento.html"><button>Agendamentos</button></a>
                     </ul>
-                <div class="main-acessos">
+                <div class="main-acessos" id="access">
                     <a href="../view/login.user.html" class="login"><i class="ri-user-fill"></i>Login</a>
                     <a href="../view/cadastro.user.html" class="Cadastro">/ Cadastro</a>
                 </div>
@@ -59,16 +60,16 @@ const Layout = {
                         Menu
                     </h6>
                     <p>
-                        <a href="#!" class="text-reset">Home</a>
+                        <a href="../view/index.html" class="text-reset">Home</a>
                     </p>
                     <p>
-                        <a href="#!" class="text-reset">Quem Somos</a>
+                        <a href="../view/index.html#Sobre" class="text-reset">Quem Somos</a>
                     </p>
                     <p>
-                        <a href="#!" class="text-reset">Serviços</a>
+                        <a href="../view/index.html#Servicos" class="text-reset">Serviços</a>
                     </p>
                     <p>
-                        <a href="#!" class="text-reset">Contato</a>
+                        <a href="../view/index.html#"Contato class="text-reset">Contato</a>
                     </p>
                     </div>
                     <!-- Grid column -->
@@ -101,7 +102,7 @@ const Layout = {
                     <p><i class="fas fa-home me-3"></i> São Paulo, Nova paulista 10012, BR</p>
                     <p>
                         <i class="fas fa-envelope me-3"></i>
-                        atendimentosad@gmail.com
+                        atendimentohope@gmail.com
                     </p>
                     <p><i class="fas fa-phone me-3"></i> + 55 19 9234 3333</p>
                     <p><i class="fas fa-print me-3"></i> + 55 19 2198 4422</p>
@@ -134,7 +135,8 @@ const Auth = {
     },
     login: function(userData) {
         localStorage.setItem("user", JSON.stringify(userData));
-        document.getElementById("userLink").innerText = `Olá, ${userData.nomePaciente}`;
+        document.getElementById("access").innerText = `Olá, ${userData.nomePaciente}`;
+        document.getElementById("change").innerHTML =`<a href="../view/userInformation.html">Minha conta</a>`;
     },
     logout: function() {
         localStorage.removeItem("user");
@@ -169,12 +171,15 @@ const psicologos = {
         if (!profissionaisPsicologos){
             document.getElementById("psicologos").innerHTML = 
             `
-            
+            <h1 class="titlePsicologos">Nao há nenhum psicologo disponivel dentro da nova base de dados</h1>
             `
         }
         for (i = 0; i < length(profissionaisPsicologos); i++){
             // Colocar a estrutura da amostragem dos psicologos
             const psicologo = document.createElement("div");
+            psicologo.innerHTML = 
+            `
+            `
             document.getElementById("psicologos").appendChild(psicologo)
         }
     }
@@ -186,4 +191,13 @@ document.addEventListener("DOMContentLoaded", () => {
     Layout.addFooter();
 })
 
-// Funcao para ao clicar no botao ir para agendamento
+
+
+// Interation with Data --> send data to the API Flask...
+// Send data to put it on Data Base
+const forms = document.getElementById("cadastroForms")
+forms.addEventListener("submit", (event) =>{
+    event.preventDefault();
+    dataForms = Usuario.saveFormDataAsJSON(forms);
+    Usuario.sendToFlask("http://127.0.0.1:0000/receber-dados", dataForms);
+})

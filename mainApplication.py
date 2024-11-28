@@ -8,7 +8,7 @@ def get_db_connection():
     return pymysql.connect(
         host='localhost',
         user='root',
-        password='',
+        password='RiCK20052020.com.br',
         database='bancodedadoshope'
     )
 
@@ -26,7 +26,7 @@ def login():
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT p.pacienteID, p.nomePaciente, p.dataNascPaciente, p.pacienteCPF, l.email FROM login l JOIN pacientes p ON login.userID = pacientes.pacienteID WHERE email=%s AND senha=%s", (email, senha))
+    cursor.execute("SELECT p.pacienteID, p.nomePaciente, p.dataNascPaciente, p.pacienteCPF FROM login l JOIN pacientes p ON login.userID = pacientes.pacienteID WHERE email=%s AND senha=%s", (email, senha))
     user = cursor.fetchone()
     conn.close()
     
@@ -62,6 +62,26 @@ def agendar():
     conn.commit()
     conn.close()
     return jsonify({"message": "Consulta agendada com sucesso!"})
+
+# Rota para novo usuario dentro do banco de dados
+@app.route('/receberDados', methods = ['POST'])
+def receberDados():
+    try:
+        dados = request.get_json()
+        return jsonify({
+            "mensagem": "Dados recebidos com sucesso!",
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "mensagem": "Erro ao processar os dados.",
+            "erro": str(e)
+        }), 400
+    
+    # Pushing receptioneted data to DataBase
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("",
+                   (dados['']))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

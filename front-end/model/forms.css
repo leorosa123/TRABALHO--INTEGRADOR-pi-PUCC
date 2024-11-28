@@ -7,16 +7,17 @@ body{
 }
 .cont{
   margin: 10%;
-  margin-left: 28%;
+  margin-left: 25%;
 }
 
 .form {
   background-color: white;
   padding: 20px;
-  border-radius: 5%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 60%;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
+  width: 70%;
   margin: 5%;
+  border-radius: 6%;
+  box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.2);
 }
 
 label{
