@@ -201,3 +201,7 @@ forms.addEventListener("submit", (event) =>{
     dataForms = Usuario.saveFormDataAsJSON(forms);
     Usuario.sendToFlask("http://127.0.0.1:0000/receber-dados", dataForms);
 })
+
+// Fazendo a pagina abrir apenas se houver logado
+// Mandando as informacoes para o python --> Atualizacao de informacoes
+// 

@@ -17,7 +17,7 @@ def get_db_connection():
 def index():
     return render_template('index.html')
 
-# Rota para login
+# Rota para o login
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -68,6 +68,11 @@ def agendar():
 def receberDados():
     try:
         dados = request.get_json()
+        # Pushing receptioneted data to DataBase
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("",
+                   (dados['']))
         return jsonify({
             "mensagem": "Dados recebidos com sucesso!",
         }), 200
@@ -77,11 +82,19 @@ def receberDados():
             "erro": str(e)
         }), 400
     
-    # Pushing receptioneted data to DataBase
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("",
-                   (dados['']))
+# Rota para atualizar os dados no banco de dados
+@app.route('/atualizar', methods = ['POST'])
+def atualizarDados(user):
+    data = request.json
+    for dado in range(0, len(data)-1):
+        if data[dado] == user[dado]:
+            return 0
+        else:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("UPDATE pacientes",
+                (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
+        
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
