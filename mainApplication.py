@@ -92,7 +92,7 @@ def atualizarDados(user):
         else:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("UPDATE pacientes",
+            cursor.execute("UPDATE pacientes WHERE pacienteID = %s",
                 (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
         
 
