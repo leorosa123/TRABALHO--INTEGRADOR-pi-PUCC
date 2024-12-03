@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 import pymysql
 
-app = Flask(__name__, template_folder='./front-end/view')
+app = Flask(__name__, template_folder='./front-end/view', static_folder='./front-end/confg')
 
 # Conexão com o banco de dados
 def get_db_connection():
@@ -17,6 +17,7 @@ def get_db_connection():
 def index():
     return render_template('index.html')
 
+# Renderizacao das demais paginas
 # Rota para o login
 @app.route('/login', methods=['POST'])
 def login():
