@@ -1,6 +1,4 @@
-// Interation with page --> acording to data and structure reuse
-// Objeto para Menu e Footer
-
+// Objeto
 const Layout = {
     addHeader: function () {
         const headerElement = document.querySelector("header");

@@ -132,3 +132,24 @@ def atualizarDados():
 # Executar o servidor
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
+
+# Se pessoa sem login
+# --> Nao pode ir para nenhuma tela alem de login e cadastro
+
+# Assim que a pessoa logar
+# Desbloquear o restante das telas
+# --> conectar para as informacoes do user e liberar o link de alterar conta no lugar do login e do cadastro
+# --> cadastro vira logout e login vira o primeiro nome da pessoa( ao clicar leva para o alterador de informacoes )
+
+# Para o login
+# Verificar se e-mail e senha colocados --> conectar com o querry do banco de dados
+
+# Cadastro
+# Verificar as informacoes e se n tem nenhum login com o CPF ou com o email ja feito --> conectar com o banco de dados
+
+# Exibir os psicologos que estao dentro do banco na tela assim que a pagina de agentementos abrir
+
+# Agendamento
+# --> cuidado com os horarios na exibicao dos psicologos... eles tem que estar de acordo com as consultas ja marcadas
+# --> Uma pessoa nao pode ter mais de 5 consultas
+# --> ao clicar no horario --> Trocar para um check verde --> se clicar no check --> consulta marcada
