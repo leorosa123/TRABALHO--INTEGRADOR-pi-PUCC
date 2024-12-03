@@ -1,101 +1,134 @@
 from flask import Flask, request, jsonify, render_template
 import pymysql
 
+# Configuração do Flask
 app = Flask(__name__, template_folder='./front-end/view', static_folder='./front-end/confg')
 
-# Conexão com o banco de dados
+# Função para conectar ao banco de dados
 def get_db_connection():
     return pymysql.connect(
         host='localhost',
         user='root',
         password='',
-        database='bancodedadoshope'
+        database='bancodedadoshope',
+        cursorclass=pymysql.cursors.DictCursor
     )
 
-# Running main page
+# Rotas para renderizar páginas
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Renderizacao das demais paginas
-# Rota para o login
+@app.route('/cadastro')
+def cadastro():
+    return render_template('cadastro.user.html')
+
+@app.route('/login-page')
+def login_page():
+    return render_template('login.user.html')
+
+@app.route('/informacoes')
+def informacoes():
+    return render_template('userInformation.html')
+
+@app.route('/agendamento')
+def agendamento():
+    return render_template('agendamento.html')
+
+# Rota para autenticação de login (POST)
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.json
-    email = data.get('email')
-    senha = data.get('senha')
-    
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT p.pacienteID, p.nomePaciente, p.dataNascPaciente, p.pacienteCPF FROM login l JOIN pacientes p ON login.userID = pacientes.pacienteID WHERE email=%s AND senha=%s", (email, senha))
-    user = cursor.fetchone()
-    conn.close()
-    
-    if user:
-        return jsonify({
-            "pacienteID": user[0],
-            "nomePaciente": user[1],
-            "dataNascPaciente": user[2],
-            "pacienteCPF": user[3],
-            "email": email
-        })
-    else:
-        return jsonify({"error": "Credenciais inválidas"}), 401
-
-# Rota para listar psicólogos
-@app.route('/psicologos', methods=['GET'])
-def get_psicologos():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM psicologos")
-    psicologos = cursor.fetchall()
-    conn.close()
-    return jsonify(psicologos)
-
-# Rota para agendamento
-@app.route('/agendar', methods=['POST'])
-def agendar():
-    data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO consulta (pacienteID, psicologoID, dataHoraConsulta) VALUES (%s, %s, %s)",
-                   (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Consulta agendada com sucesso!"})
-
-# Rota para novo usuario dentro do banco de dados
-@app.route('/receberDados', methods = ['POST'])
-def receberDados():
     try:
-        dados = request.get_json()
-        # Pushing receptioneted data to DataBase
+        data = request.json
+        email = data.get('email')
+        senha = data.get('senha')
+
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("",
-                   (dados['']))
-        return jsonify({
-            "mensagem": "Dados recebidos com sucesso!",
-        }), 200
-    except Exception as e:
-        return jsonify({
-            "mensagem": "Erro ao processar os dados.",
-            "erro": str(e)
-        }), 400
-    
-# Rota para atualizar os dados no banco de dados
-@app.route('/atualizar', methods = ['POST'])
-def atualizarDados(user):
-    data = request.json
-    for dado in range(0, len(data)-1):
-        if data[dado] == user[dado]:
-            return 0
-        else:
-            conn = get_db_connection()
-            cursor = conn.cursor()
-            cursor.execute("UPDATE pacientes WHERE pacienteID = %s",
-                (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
-        
+        cursor.execute("""
+            SELECT p.pacienteID, p.nomePaciente, p.dataNascPaciente, p.pacienteCPF
+            FROM login l
+            JOIN pacientes p ON l.userID = p.pacienteID
+            WHERE l.email = %s AND l.senha = %s
+        """, (email, senha))
+        user = cursor.fetchone()
+        conn.close()
 
+        if user:
+            return jsonify({
+                "pacienteID": user['pacienteID'],
+                "nomePaciente": user['nomePaciente'],
+                "dataNascPaciente": user['dataNascPaciente'],
+                "pacienteCPF": user['pacienteCPF'],
+                "email": email
+            })
+        else:
+            return jsonify({"error": "Credenciais inválidas"}), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Rota para listar psicólogos (GET)
+@app.route('/psicologos', methods=['GET'])
+def get_psicologos():
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM psicologos")
+        psicologos = cursor.fetchall()
+        conn.close()
+        return jsonify(psicologos)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Rota para agendar consulta (POST)
+@app.route('/agendar', methods=['POST'])
+def agendar():
+    try:
+        data = request.json
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO consulta (pacienteID, psicologoID, dataHoraConsulta)
+            VALUES (%s, %s, %s)
+        """, (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
+        conn.commit()
+        conn.close()
+        return jsonify({"message": "Consulta agendada com sucesso!"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Rota para cadastrar novo usuário (POST)
+@app.route('/receberDados', methods=['POST'])
+def receberDados():
+    data = request.json
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO pacientes (nomePaciente, email, senha, pacienteCPF, dataNascPaciente)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (data['name'], data['email'], data['pass'], data['cpf'], data['datanasc']))
+    conn.commit()
+    conn.close()
+    return jsonify({"mensagem": "Cadastro realizado com sucesso!"}), 200
+
+# Rota para atualizar dados de pacientes (POST)
+@app.route('/atualizar', methods=['POST'])
+def atualizarDados():
+    try:
+        data = request.json
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE pacientes
+            SET nomePaciente = %s, dataNascPaciente = %s, pacienteCPF = %s, email = %s
+            WHERE pacienteID = %s
+        """, (data['nomePaciente'], data['dataNascPaciente'], data['pacienteCPF'], data['email'], data['pacienteID']))
+        conn.commit()
+        conn.close()
+        return jsonify({"mensagem": "Dados atualizados com sucesso!"}), 200
+    except Exception as e:
+        return jsonify({"mensagem": "Erro ao atualizar os dados.", "erro": str(e)}), 400
+
+# Executar o servidor
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
