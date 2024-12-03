@@ -1,15 +1,5 @@
 // Interation with page --> acording to data and structure reuse
 // Objeto para Menu e Footer
-const urls = {
-    index: "{{url_for('index')}}",
-    sobre: "{{url_for('index')}}#Sobre",
-    servicos: "{{url_for('index')}}#Servicos",
-    contato: "{{url_for('index')}}#Contato",
-    loginPage: "{{url_for('login_page')}}",
-    cadastro: "{{url_for('cadastro')}}",
-    agendamento: "{{url_for('agendamento')}}",
-    userInfo: "{{url_for('informacoes')}}"
-};
 
 const Layout = {
     addHeader: function () {
@@ -35,27 +25,106 @@ const Layout = {
             `;
         }
     },
-    addFooter: function () {
-        const footerElement = document.querySelector("footer");
-        if (footerElement) {
-            footerElement.innerHTML = `
-                <footer class="text-center text-lg-start bg-body-tertiary text-muted" id="Contato">
-                    <div class="container text-center mt-4">
-                        <h6 class="text-uppercase fw-bold mb-4">Agency H.O.P.E</h6>
-                        <p>
-                            Fornecendo suporte psicológico com soluções inteligentes para uma vida mais equilibrada.
-                        </p>
-                        <ul>
-                            <li><a href="${urls.index}">Home</a></li>
-                            <li><a href="${urls.sobre}">Sobre Nós</a></li>
-                            <li><a href="${urls.servicos}">Serviços</a></li>
-                            <li><a href="${urls.contato}">Contato</a></li>
-                        </ul>
-                        <p>Contato: atendimentohope@gmail.com | +55 19 9234 3333</p>
+    addFooter: function() {
+        document.querySelector("footer").innerHTML = `
+            <!-- Footer -->
+            <footer class="text-center text-lg-start bg-body-tertiary text-muted" id="Contato">
+            <!-- Section: Social media -->
+            <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+                <!-- Left -->
+                <div class="me-5 d-none d-lg-block fw-bold">
+                <span>Meios de Contato e conexão</span>
+                </div>
+                <!-- Left -->
+            </section>
+            <!-- Section: Social media -->
+
+            <!-- Section: Links  -->
+            <section>
+                <div class="container text-center text-md-start mt-5">
+                <!-- Grid row -->
+                <div class="row mt-3">
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                    <!-- Content -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        <i class="fas fa-gem me-3"></i>Agency S.A.D
+                    </h6>
+                    <p>
+                        Buscamos soluções inteligêntes e humanizadas para melhorar a saúde mental e bem estar de pessoas com ploblemas cotidianos reais.
+                    </p>
                     </div>
-                </footer>
-            `;
-        }
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4 menu-footer">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        Menu
+                    </h6>
+                    <p>
+                        <a href="${urls.index}" class="text-reset">Home</a>
+                    </p>
+                    <p>
+                        <a href="${urls.sobre}" class="text-reset">Quem Somos</a>
+                    </p>
+                    <p>
+                        <a href="${urls.servicos}" class="text-reset">Serviços</a>
+                    </p>
+                    <p>
+                        <a href="${urls.contato}" class="text-reset">Contato</a>
+                    </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4 servicos-footer">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        Soluções
+                    </h6>
+                    <p>
+                        <a href="#!" class="text-reset">Reuniões</a>
+                    </p>
+                    <p>
+                        <a href="#!" class="text-reset">Ligações</a>
+                    </p>
+                    <p>
+                        <a href="#!" class="text-reset">Relatórios</a>
+                    </p>
+                    <p>
+                        <a href="#!" class="text-reset">Jogos</a>
+                    </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4">Contato</h6>
+                    <p><i class="fas fa-home me-3"></i> São Paulo, Nova paulista 10012, BR</p>
+                    <p>
+                        <i class="fas fa-envelope me-3"></i>
+                        atendimentohope@gmail.com
+                    </p>
+                    <p><i class="fas fa-phone me-3"></i> + 55 19 9234 3333</p>
+                    <p><i class="fas fa-print me-3"></i> + 55 19 2198 4422</p>
+                    </div>
+                    <!-- Grid column -->
+                </div>
+                <!-- Grid row -->
+                </div>
+            </section>
+            <!-- Section: Links  -->
+
+            <!-- Copyright -->
+            <div class="text-center p-4" style="background-color: rgba(87, 87, 87, 0.05);">
+            <b>  © 2024 Copyright alunos da Pontifícia Universidade Católica de Campinas </b>
+            </div>
+            <!-- Copyright -->
+            </footer>
+            <!-- Footer -->
+        `;
     }
 };
 

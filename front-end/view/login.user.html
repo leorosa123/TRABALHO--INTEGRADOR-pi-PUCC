@@ -13,26 +13,21 @@
   <link rel="stylesheet" type="text/css" href="{{url_for('static', filename = 'forms.css')}}">
   <link rel="icon" href="{{url_for('static', filename = 'S.A.D.png')}}" type="image/x-icon">
   <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='home-estilos.css')}}">
-  <script src="{{url_for('static', filename='script.js')}}"></script>
 </head>
 <body>
-    <!--Inicio do Header-->
-    <header style="background-color: #fff;">
-        <a href="#" class="logo"><img src="../confg/S.A.D.png" alt="" width="500px" height="500px"></a>
-        <ul class="navbar">
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="index.html#Sobre">Sobre nós</a></li>
-            <li><a href="index.html#Servicos">Serviços</a></li>
-            <li><a href="index.html#Contato">Contato</a></li>
-            <a href="agendamento.html"><button>Agendamentos</button></a>
-           
-        </ul>
-        <div class="main-acessos">
-            <a href="login.user.html" class="login"><i class="ri-user-fill"></i>Login</a>
-            <a href="cadastro.user.html" class="Cadastro">/ Cadastro</a>
-        </div>
-    </header>
-     <!--Fim do Header-->
+    <script>
+      const urls = {
+        index: "{{ url_for('index') }}",
+        sobre: "{{ url_for('index') }}#Sobre",
+        servicos: "{{ url_for('index') }}#Servicos",
+        contato: "{{ url_for('index') }}#Contato",
+        loginPage: "{{ url_for('login_page') }}",
+        cadastro: "{{ url_for('cadastro') }}",
+        agendamento: "{{ url_for('agendamento') }}",
+        userInfo: "{{ url_for('informacoes') }}"
+    };
+    </script>
+    <header style="background-color: #fff;"></header>
     
      <!--Inicio do Body-->
     <div id="cont" class="cont">
@@ -159,5 +154,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{url_for('static', filename='script.js')}}"></script>
 </body>
 </html>

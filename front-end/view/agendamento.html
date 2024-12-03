@@ -17,6 +17,18 @@
     <title>Home HOPE</title>
 </head>
 <body>
+    <script>
+        const urls = {
+          index: "{{ url_for('index') }}",
+          sobre: "{{ url_for('index') }}#Sobre",
+          servicos: "{{ url_for('index') }}#Servicos",
+          contato: "{{ url_for('index') }}#Contato",
+          loginPage: "{{ url_for('login_page') }}",
+          cadastro: "{{ url_for('cadastro') }}",
+          agendamento: "{{ url_for('agendamento') }}",
+          userInfo: "{{ url_for('informacoes') }}"
+      };
+      </script>
     <header></header>
     <div id="psicologos"></div>
     <footer class="text-center text-lg-start bg-body-tertiary text-muted" id="Contato"></footer>
