@@ -30,42 +30,33 @@
     <header></header>
     <div id="cont" class="cont">
       <form class="form">
-        <p class="form-title">Faça seu cadastro</p>
+        <p class="form-title">Alterar informacoes</p>
         <div class="input-container">
-          <label for="name" class="labelForm">Nome</label>
-          <input type="text" placeholder="Ex: João pedro" name="name">
+          <input type="text" placeholder="Nome" name="name">
           <span>
           </span>
         </div>
         <div class="input-container">
-            <label for="email" class="labelForm">Email</label>
-            <input type="email" placeholder="Ex: joao@gmail.com" name="email">
+            <input type="email" placeholder="Email" name="email">
             <span>
             </span>
         </div>
         <div class="input-container">
-          <label for="pass" class="labelForm">Senha</label>
-          <input type="password" placeholder="Ex: ###-####" name="pass">
+          <input type="password" placeholder="Senha" name="pass">
+          <span>
+          </span>
         </div>
         <div class="input-container">
-          <label for="confirmPass" class="labelForm">Confirme a Senha</label>
-          <input type="password" placeholder="Ex: ###-####" name="confirmPass">
+          <input type="text" placeholder="CPF" name="cpf">
+          <span>
+          </span>
         </div>
         <div class="input-container">
-          <label for="cpf" class="labelForm">CPF</label>
-          <input type="text" placeholder="Ex: ###-####" name="cpf">
+          <input type="date" placeholder="Ex: DataNasc" name="datanasc">
+          <span>
+          </span>
         </div>
-        <div class="input-container">
-          <label for="datanasc" class="labelForm">Data de Nascimento</label>
-          <input type="date" placeholder="Ex: ###-####" name="datanasc">
-        </div>
-          <button type="submit" class="submit" action="enviarFormulario">
-          Cadastrar
-          </button>
-        <p class="signup-link">
-          possui uma conta?
-          <a href="login.user.html">Logar</a>
-        </p>
+        <button type="submit" class="submit" action="alterarDados">Salvar</button>
       </form>
     </div>
     <footer class="text-center text-lg-start bg-body-tertiary text-muted" id="Contato"></footer>
