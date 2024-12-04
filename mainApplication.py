@@ -9,7 +9,7 @@ def get_db_connection():
     return psycopg2.connect(
         host='127.0.0.1:3306',
         user='root',
-        password='RiCk20052020.com.br',
+        password='',
         database='BancoDeDadosHOPE',
     )
 
