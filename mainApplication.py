@@ -1,17 +1,16 @@
 from flask import Flask, request, jsonify, render_template
-import pymysql
+import psycopg2
 
 # Configuração do Flask
 app = Flask(__name__, template_folder='./front-end/view', static_folder='./front-end/confg')
 
 # Função para conectar ao banco de dados
 def get_db_connection():
-    return pymysql.connect(
-        host='localhost',
+    return psycopg2.connect(
+        host='127.0.0.1:3306',
         user='root',
-        password='',
-        database='bancodedadoshope',
-        cursorclass=pymysql.cursors.DictCursor
+        password='RiCk20052020.com.br',
+        database='BancoDeDadosHOPE',
     )
 
 # Rotas para renderizar páginas
@@ -56,10 +55,10 @@ def login():
 
         if user:
             return jsonify({
-                "pacienteID": user['pacienteID'],
-                "nomePaciente": user['nomePaciente'],
-                "dataNascPaciente": user['dataNascPaciente'],
-                "pacienteCPF": user['pacienteCPF'],
+                "pacienteID": user[0],
+                "nomePaciente": user[1],
+                "dataNascPaciente": user[2],
+                "pacienteCPF": user[3],
                 "email": email
             })
         else:
@@ -87,29 +86,62 @@ def agendar():
         data = request.json
         conn = get_db_connection()
         cursor = conn.cursor()
+
+        # Verifica se o paciente já tem 5 consultas
+        cursor.execute("SELECT COUNT(*) FROM consulta WHERE pacienteID = %s", (data['pacienteID'],))
+        consulta_count = cursor.fetchone()[0]
+
+        if consulta_count >= 5:
+            return jsonify({"error": "Você já atingiu o limite de 5 consultas."}), 400
+
+        # Verifica disponibilidade do horário
+        cursor.execute("""
+            SELECT * FROM consulta WHERE psicologoID = %s AND dataHoraConsulta = %s
+        """, (data['psicologoID'], data['dataHoraConsulta']))
+        consulta_existente = cursor.fetchone()
+
+        if consulta_existente:
+            return jsonify({"error": "Horário indisponível."}), 400
+
+        # Insere a consulta
         cursor.execute("""
             INSERT INTO consulta (pacienteID, psicologoID, dataHoraConsulta)
             VALUES (%s, %s, %s)
         """, (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
         conn.commit()
         conn.close()
-        return jsonify({"message": "Consulta agendada com sucesso!"})
+        return jsonify({"mensagem": "Consulta agendada com sucesso!"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 # Rota para cadastrar novo usuário (POST)
 @app.route('/receberDados', methods=['POST'])
 def receberDados():
     data = request.json
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO pacientes (nomePaciente, email, senha, pacienteCPF, dataNascPaciente)
-        VALUES (%s, %s, %s, %s, %s)
-    """, (data['name'], data['email'], data['pass'], data['cpf'], data['datanasc']))
-    conn.commit()
-    conn.close()
-    return jsonify({"mensagem": "Cadastro realizado com sucesso!"}), 200
+    campos_necessarios = ['name', 'email', 'pass', 'cpf', 'datanasc']
+
+    if not all(campo in data for campo in campos_necessarios):
+        return jsonify({"mensagem": "Dados incompletos."}), 400
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT idPaciente FROM pacientes WHERE email = %s OR pacienteCPF = %s", (data['email'], data['cpf']))
+        resultado = cursor.fetchone()
+
+        if resultado:
+            return jsonify({"mensagem": "E-mail ou CPF já cadastrado."}), 409
+
+        cursor.execute("""
+            INSERT INTO pacientes (nomePaciente, email, senha, pacienteCPF, dataNascPaciente)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (data['name'], data['email'], data['pass'], data['cpf'], data['datanasc']))
+        conn.commit()
+        return jsonify({"mensagem": "Cadastro realizado com sucesso!"}), 200
+    except Exception as e:
+        return jsonify({"mensagem": "Erro interno no servidor."}), 500
+
 
 # Rota para atualizar dados de pacientes (POST)
 @app.route('/atualizar', methods=['POST'])

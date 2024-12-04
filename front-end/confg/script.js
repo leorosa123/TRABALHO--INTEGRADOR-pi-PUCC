@@ -1,4 +1,7 @@
-// Objeto
+// User
+user = NaN
+
+// Objeto para o menu
 const Layout = {
     addHeader: function () {
         const headerElement = document.querySelector("header");
@@ -128,21 +131,16 @@ const Layout = {
 
 // Objeto para autenticação
 const Auth = {
-    checkLogin: function() {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (!user) {
-            window.location.href = "login.html";
-        }
-    },
-    login: function(userData) {
+    login: function (userData) {
         localStorage.setItem("user", JSON.stringify(userData));
-        document.getElementById("access").innerText = `Olá, ${userData.nomePaciente}`;
-        document.getElementById("change").innerHTML =`<a href="${urls.userInfo}">Minha conta</a>`;
+        Layout.addHeader();
+        window.location.href = urls.index; 
     },
-    logout: function() {
+    logout: function () {
         localStorage.removeItem("user");
-        window.location.href = "login.html";
-    }
+        Layout.addHeader();
+        window.location.href = urls.loginPage; 
+    },
 };
 
 // Objeto para gerenciar usuários
@@ -167,26 +165,43 @@ const Usuario = {
 
 // Exibindo os psicologos
 const psicologos = {
-    showUpPsicologies: async function(){
-        const profissionaisPsicologos = JSON.parse(localStorage.getItem("psicologos"));
-        if (!profissionaisPsicologos){
-            document.getElementById("psicologos").innerHTML = 
-            `
-            <h1 class="titlePsicologos">Não há nenhum psicologo disponivel dentro da base de dados</h1>
-            `
-        }
-        else{
-            for (i = 0; i < length(profissionaisPsicologos); i++){
-                // Colocar a estrutura da amostragem dos psicologos
-                const psicologo = document.createElement("div");
-                psicologo.innerHTML = 
-                `
-                `
-                document.getElementById("psicologos").appendChild(psicologo)
-            }  
+    showUpPsicologies: async function() {
+        try {
+            const response = await fetch("http://localhost:5000/psicologos");
+            const profissionais = await response.json();
+
+            const container = document.getElementById("psicologos");
+            if (profissionais.length === 0) {
+                container.innerHTML = "<h1>Não há psicólogos disponíveis.</h1>";
+            } else {
+                profissionais.forEach((psicologo) => {
+                    const card = `
+                        <div class="psicologo-card">
+                            <h3>${psicologo.nome}</h3>
+                            <p>${psicologo.especialidade}</p>
+                            <!-- Adicione os horários disponíveis aqui -->
+                        </div>`;
+                    container.innerHTML += card;
+                });
+            }
+        } catch (error) {
+            console.error("Erro ao carregar psicólogos:", error);
         }
     }
-}
+};
+
+//Verifica o Login
+document.addEventListener("DOMContentLoaded", () => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+        alert("Você precisa estar logado para acessar essa página.");
+        window.location.href = urls.loginPage;
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    psicologos.showUpPsicologies();
+});
 
 // Funcoes para declarar o login...
 
@@ -202,3 +217,149 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 // Enviando as informacoes dentro do forms de cadastro
+// Função para validar os campos do formulário
+function validateForm(formData) {
+    const { nome, cpf, email, dataNascimento, senha, confirmarSenha } = formData;
+
+    // Validação do nome
+    if (!nome || nome.trim().length < 3) {
+        return "O nome deve ter pelo menos 3 caracteres.";
+    }
+
+    // Validação do CPF (formato básico, sem verificação de dígitos verificadores)
+    const cpfRegex = /^\d{11}$/;
+    if (!cpfRegex.test(cpf)) {
+        return "CPF inválido. Deve conter 11 números.";
+    }
+
+    // Validação do email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return "E-mail inválido.";
+    }
+
+    // Validação da data de nascimento
+    const hoje = new Date();
+    const dataNasc = new Date(dataNascimento);
+    if (!dataNascimento || dataNasc >= hoje) {
+        return "Data de nascimento inválida.";
+    }
+
+    // Validação da senha
+    if (senha.length < 6) {
+        return "A senha deve ter pelo menos 6 caracteres.";
+    }
+
+    // Verificar se as senhas coincidem
+    if (senha !== confirmarSenha) {
+        return "As senhas não coincidem.";
+    }
+
+    // Retorna null se tudo estiver válido
+    return null;
+}
+
+// Função para enviar os dados para a API Flask
+async function submitForm() {
+    // Captura os dados do formulário
+    const formData = {
+        name: document.getElementById("nome").value,
+        cpf: document.getElementById("cpf").value,
+        email: document.getElementById("email").value,
+        datanasc: document.getElementById("dataNascimento").value,
+        pass: document.getElementById("senha").value,
+    };
+
+    // Valida os dados (a função validateForm deve ser usada antes)
+    const validationError = validateForm(formData);
+    if (validationError) {
+        alert(validationError);
+        return;
+    }
+
+    // Envia os dados para a API Flask
+    try {
+        const response = await fetch("http://localhost:5000/receberDados", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            alert(responseData.mensagem);
+            console.log(responseData);
+        } else if (response.status === 409) {
+            alert("E-mail ou CPF já cadastrado.");
+        } else {
+            alert("Erro ao enviar o formulário. Tente novamente.");
+        }
+    } catch (error) {
+        console.error("Erro na requisição:", error);
+        alert("Erro ao conectar-se à API.");
+    }
+}
+
+// validatecoesDeLogin
+// Verifica se a variável `user` está vazia
+function checkUserOnPageLoad() {
+    const user = localStorage.getItem("user"); // Verifica o localStorage para o usuário
+    return user ? 1 : 0;
+}
+
+// Exemplo de uso ao carregar a página
+document.addEventListener("DOMContentLoaded", () => {
+    const userStatus = checkUserOnPageLoad();
+    console.log(`User status: ${userStatus}`); // 0 = Não logado; 1 = Logado
+    if (userStatus === 0) {
+        window.location.href = "login.html"; // Redireciona para login se não logado
+    }
+});
+
+// Função para autenticar usuário com servidor Flask
+async function loginUser(email, senha) {
+    try {
+        // Endpoint Flask para login
+        const url = "{{}}";
+
+        // Envia as credenciais
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, senha }),
+        });
+
+        // Trata a resposta
+        if (response.ok) {
+            const userData = await response.json();
+            console.log("Usuário autenticado:", userData);
+
+            // Salva o usuário no localStorage
+            localStorage.setItem("user", JSON.stringify(userData));
+
+            // Atualiza a interface ou redireciona
+            alert(`Bem-vindo(a), ${userData.nomePaciente}!`);
+            window.location.href = "index.html"; // Altere para a página desejada
+        } else {
+            const errorData = await response.json();
+            alert(errorData.error || "Erro ao autenticar.");
+        }
+    } catch (error) {
+        console.error("Erro na autenticação:", error);
+        alert("Erro ao conectar ao servidor. Tente novamente.");
+    }
+}
+
+// Exemplo de uso: Chamando a função de login
+document.querySelector("#loginForm").addEventListener("submit", async (event) => {
+    event.preventDefault(); // Previne o envio padrão do formulário
+
+    const email = document.querySelector("#email").value;
+    const senha = document.querySelector("#senha").value;
+
+    await loginUser(email, senha);
+});
