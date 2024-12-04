@@ -166,7 +166,7 @@ const psicologos = {
     showUpPsicologies: async function() {
         try {
             const response = await fetch(urls.psicologos);
-            const profissionais = {}//await response.json();
+            const profissionais = await response.json();
 
             const container = document.getElementById("psicologos");
             if (profissionais.length === 0) {
