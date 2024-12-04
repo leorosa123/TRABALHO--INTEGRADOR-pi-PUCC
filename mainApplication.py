@@ -76,9 +76,9 @@ def login():
                 "email": email
             })
         else:
-            return jsonify({"error": "Credenciais inválidas"}), 401
+            return render_template('index.html')
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return render_template('index.html')
 
 # Rota para listar psicólogos (GET)
 @app.route('/psicologos', methods=['GET'])
@@ -106,9 +106,9 @@ def agendar():
         """, (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
         conn.commit()
         conn.close()
-        return jsonify({"message": "Consulta agendada com sucesso!"})
+        return render_template('index.html')
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return render_template('index.html')
 
 # Rota para cadastrar novo usuário (POST)
 
@@ -158,7 +158,7 @@ def receberDados():
         return render_template('index.html')
     except Exception as e:
         print("Erro:", e)
-        return jsonify({"error": str(e)}), 500
+        return render_template('index.html')
 
 
 # Rota para atualizar dados de pacientes (POST)

@@ -179,7 +179,7 @@ const psicologos = {
                         <div class="psicologo-card">
                             <h3>${psicologo.nome}</h3>
                             <p>${psicologo.especialidade}</p>
-                            <!-- Adicione os horários disponíveis aqui -->
+                            
                         </div>`;
                     container.innerHTML += card;
                 });
