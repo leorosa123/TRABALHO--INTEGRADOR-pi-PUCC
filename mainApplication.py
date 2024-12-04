@@ -1,17 +1,29 @@
 from flask import Flask, request, jsonify, render_template
-import psycopg2
+import pymysql
 
 # Configuração do Flask
 app = Flask(__name__, template_folder='./front-end/view', static_folder='./front-end/confg')
 
 # Função para conectar ao banco de dados
 def get_db_connection():
-    return psycopg2.connect(
-        host='127.0.0.1:3306',
+    return pymysql.connect(
+        host='localhost',
         user='root',
-        password='',
-        database='BancoDeDadosHOPE',
+        password='RiCk20052020.com.br',
+        database='bancodedadoshope',
+        cursorclass=pymysql.cursors.DictCursor
     )
+    
+def test_connection():
+    try:
+        conn = get_db_connection()
+        print("Conexão estabelecida com sucesso!")
+        conn.close()
+    except Exception as e:
+        print("Erro ao conectar ao banco de dados:", e)
+
+if __name__ == "__main__":
+    test_connection()
 
 # Rotas para renderizar páginas
 @app.route('/')
@@ -38,10 +50,11 @@ def agendamento():
 @app.route('/login', methods=['POST'])
 def login():
     try:
-        data = request.json
-        email = data.get('email')
-        senha = data.get('senha')
+        # Captura os dados do formulário HTML
+        email = request.form.get('name')
+        senha = request.form.get('pass')
 
+        # Conecta ao banco de dados
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("""
@@ -53,12 +66,13 @@ def login():
         user = cursor.fetchone()
         conn.close()
 
+        # Verifica se o usuário existe
         if user:
             return jsonify({
-                "pacienteID": user[0],
-                "nomePaciente": user[1],
-                "dataNascPaciente": user[2],
-                "pacienteCPF": user[3],
+                "pacienteID": user['pacienteID'],
+                "nomePaciente": user['nomePaciente'],
+                "dataNascPaciente": user['dataNascPaciente'],
+                "pacienteCPF": user['pacienteCPF'],
                 "email": email
             })
         else:
@@ -86,61 +100,65 @@ def agendar():
         data = request.json
         conn = get_db_connection()
         cursor = conn.cursor()
-
-        # Verifica se o paciente já tem 5 consultas
-        cursor.execute("SELECT COUNT(*) FROM consulta WHERE pacienteID = %s", (data['pacienteID'],))
-        consulta_count = cursor.fetchone()[0]
-
-        if consulta_count >= 5:
-            return jsonify({"error": "Você já atingiu o limite de 5 consultas."}), 400
-
-        # Verifica disponibilidade do horário
-        cursor.execute("""
-            SELECT * FROM consulta WHERE psicologoID = %s AND dataHoraConsulta = %s
-        """, (data['psicologoID'], data['dataHoraConsulta']))
-        consulta_existente = cursor.fetchone()
-
-        if consulta_existente:
-            return jsonify({"error": "Horário indisponível."}), 400
-
-        # Insere a consulta
         cursor.execute("""
             INSERT INTO consulta (pacienteID, psicologoID, dataHoraConsulta)
             VALUES (%s, %s, %s)
         """, (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
         conn.commit()
         conn.close()
-        return jsonify({"mensagem": "Consulta agendada com sucesso!"}), 200
+        return jsonify({"message": "Consulta agendada com sucesso!"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 # Rota para cadastrar novo usuário (POST)
+
 @app.route('/receberDados', methods=['POST'])
 def receberDados():
-    data = request.json
-    campos_necessarios = ['name', 'email', 'pass', 'cpf', 'datanasc']
-
-    if not all(campo in data for campo in campos_necessarios):
-        return jsonify({"mensagem": "Dados incompletos."}), 400
-
     try:
+        # Capturando dados enviados via POST
+        data = request.form
+        name = data.get('name')
+        cpf = data.get('cpf')
+        datanasc = data.get('datanasc')
+        email = data.get('email')
+        passw = data.get('pass')
+
+        # Verificação básica para evitar problemas com dados ausentes
+        if not all([name, cpf, datanasc, email, passw]):
+            return jsonify({"error": "Dados incompletos. Verifique os campos."}), 400
+
+        # Conectando ao banco
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT idPaciente FROM pacientes WHERE email = %s OR pacienteCPF = %s", (data['email'], data['cpf']))
-        resultado = cursor.fetchone()
+        print("Tentando inserir os valores...")
 
-        if resultado:
-            return jsonify({"mensagem": "E-mail ou CPF já cadastrado."}), 409
-
+        # Inserindo os dados na tabela 'pacientes'
         cursor.execute("""
-            INSERT INTO pacientes (nomePaciente, email, senha, pacienteCPF, dataNascPaciente)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (data['name'], data['email'], data['pass'], data['cpf'], data['datanasc']))
+            INSERT INTO pacientes (nomePaciente, pacienteCPF, dataNascPaciente)
+            VALUES (%s, %s, %s)
+        """, (name, cpf, datanasc))
+        
+        # Recuperando o pacienteID da última inserção
+        paciente_id = cursor.lastrowid
+
+        # Inserindo os dados na tabela 'login'
+        cursor.execute("""
+            INSERT INTO login (userID, email, senha)
+            VALUES (%s, %s, %s)
+        """, (paciente_id, email, passw))
+        
+        # Comitando as mudanças no banco de dados
         conn.commit()
-        return jsonify({"mensagem": "Cadastro realizado com sucesso!"}), 200
+        print("Valor inserido com sucesso.")
+
+        # Fechando a conexão
+        conn.close()
+
+        # Retornando uma resposta de sucesso
+        return render_template('index.html')
     except Exception as e:
-        return jsonify({"mensagem": "Erro interno no servidor."}), 500
+        print("Erro:", e)
+        return jsonify({"error": str(e)}), 500
 
 
 # Rota para atualizar dados de pacientes (POST)
@@ -152,9 +170,10 @@ def atualizarDados():
         cursor = conn.cursor()
         cursor.execute("""
             UPDATE pacientes
-            SET nomePaciente = %s, dataNascPaciente = %s, pacienteCPF = %s, email = %s
+            SET nomePaciente = %s, dataNascPaciente = %s, pacienteCPF = %s
             WHERE pacienteID = %s
-        """, (data['nomePaciente'], data['dataNascPaciente'], data['pacienteCPF'], data['email'], data['pacienteID']))
+        """, (data['nomePaciente'], data['dataNascPaciente'], data['pacienteCPF'], data['pacienteID']))
+
         conn.commit()
         conn.close()
         return jsonify({"mensagem": "Dados atualizados com sucesso!"}), 200
@@ -172,12 +191,6 @@ if __name__ == '__main__':
 # Desbloquear o restante das telas
 # --> conectar para as informacoes do user e liberar o link de alterar conta no lugar do login e do cadastro
 # --> cadastro vira logout e login vira o primeiro nome da pessoa( ao clicar leva para o alterador de informacoes )
-
-# Para o login
-# Verificar se e-mail e senha colocados --> conectar com o querry do banco de dados
-
-# Cadastro
-# Verificar as informacoes e se n tem nenhum login com o CPF ou com o email ja feito --> conectar com o banco de dados
 
 # Exibir os psicologos que estao dentro do banco na tela assim que a pagina de agentementos abrir
 

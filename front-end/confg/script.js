@@ -191,13 +191,13 @@ const psicologos = {
 };
 
 //Verifica o Login
-document.addEventListener("DOMContentLoaded", () => {
-    const user = localStorage.getItem("user");
-    if (!user) {
-        alert("Você precisa estar logado para acessar essa página.");
-        window.location.href = urls.loginPage;
-    }
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//     const user = localStorage.getItem("user");
+//     if (!user) {
+//         alert("Você precisa estar logado para acessar essa página.");
+//         window.location.href = urls.loginPage;
+//     }
+// });
 
 document.addEventListener("DOMContentLoaded", () => {
     psicologos.showUpPsicologies();
@@ -309,14 +309,14 @@ function checkUserOnPageLoad() {
     return user ? 1 : 0;
 }
 
-// Exemplo de uso ao carregar a página
-document.addEventListener("DOMContentLoaded", () => {
-    const userStatus = checkUserOnPageLoad();
-    console.log(`User status: ${userStatus}`); // 0 = Não logado; 1 = Logado
-    if (userStatus === 0) {
-        window.location.href = "login.html"; // Redireciona para login se não logado
-    }
-});
+// // Exemplo de uso ao carregar a página
+// document.addEventListener("DOMContentLoaded", () => {
+//     const userStatus = checkUserOnPageLoad();
+//     console.log(`User status: ${userStatus}`); // 0 = Não logado; 1 = Logado
+//     if (userStatus === 0) {
+//         window.location.href = "login.html"; // Redireciona para login se não logado
+//     }
+// });
 
 // Função para autenticar usuário com servidor Flask
 async function loginUser(email, senha) {
