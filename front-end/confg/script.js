@@ -137,7 +137,7 @@ const Auth = {
     login: function(userData) {
         localStorage.setItem("user", JSON.stringify(userData));
         document.getElementById("access").innerText = `Olá, ${userData.nomePaciente}`;
-        document.getElementById("change").innerHTML =`<a href="../view/userInformation.html">Minha conta</a>`;
+        document.getElementById("change").innerHTML =`<a href="${urls.userInfo}">Minha conta</a>`;
     },
     logout: function() {
         localStorage.removeItem("user");
@@ -172,19 +172,23 @@ const psicologos = {
         if (!profissionaisPsicologos){
             document.getElementById("psicologos").innerHTML = 
             `
-            <h1 class="titlePsicologos">Nao há nenhum psicologo disponivel dentro da nova base de dados</h1>
+            <h1 class="titlePsicologos">Não há nenhum psicologo disponivel dentro da base de dados</h1>
             `
         }
-        for (i = 0; i < length(profissionaisPsicologos); i++){
-            // Colocar a estrutura da amostragem dos psicologos
-            const psicologo = document.createElement("div");
-            psicologo.innerHTML = 
-            `
-            `
-            document.getElementById("psicologos").appendChild(psicologo)
+        else{
+            for (i = 0; i < length(profissionaisPsicologos); i++){
+                // Colocar a estrutura da amostragem dos psicologos
+                const psicologo = document.createElement("div");
+                psicologo.innerHTML = 
+                `
+                `
+                document.getElementById("psicologos").appendChild(psicologo)
+            }  
         }
     }
 }
+
+// Funcoes para declarar o login...
 
 // Inicializar Layout
 document.addEventListener("DOMContentLoaded", () => {
@@ -192,67 +196,9 @@ document.addEventListener("DOMContentLoaded", () => {
     Layout.addFooter();
 })
 
+// Definindo funcoes para cadastro e login
+document.addEventListener("DOMContentLoaded", () => {
+    psicologos.showUpPsicologies();
+})
 
-
-// Interation with Data --> send data to the API Flask...
-// Send data to put it on Data Base
-document.querySelector('.form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const email = document.querySelector('input[name="name"]').value;
-    const password = document.querySelector('input[name="pass"]').value;
-
-    const response = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha: password })
-    });
-
-    if (response.ok) {
-        const user = await response.json();
-        localStorage.setItem('user', JSON.stringify(user));
-        window.location.href = '/';
-    } else {
-        alert('Login inválido');
-    }
-});
-
-document.querySelector('#cadastroForms').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData.entries());
-
-    const response = await fetch('/receberDados', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-
-    if (response.ok) {
-        alert('Cadastro realizado com sucesso!');
-        window.location.href = '/login-page';
-    } else {
-        alert('Erro ao realizar o cadastro.');
-    }
-});
-
-async function loadPsychologists() {
-    const response = await fetch('/psicologos');
-    const psychologists = await response.json();
-    const container = document.getElementById('psicologos');
-
-    if (psychologists.length > 0) {
-        psychologists.forEach(psychologist => {
-            const card = document.createElement('div');
-            card.innerHTML = `
-                <div class="card">
-                    <h3>${psychologist.nome}</h3>
-                    <p>${psychologist.especialidade}</p>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    } else {
-        container.innerHTML = '<h1>Nenhum psicólogo disponível no momento.</h1>';
-    }
-}
-document.addEventListener("DOMContentLoaded", loadPsychologists)
+// Enviando as informacoes dentro do forms de cadastro
