@@ -166,7 +166,7 @@ const psicologos = {
     showUpPsicologies: async function() {
         try {
             const response = await fetch(urls.psicologos);
-            const profissionais = await response.json();
+            const profissionais = {}//await response.json();
 
             const container = document.getElementById("psicologos");
             if (profissionais.length === 0) {
@@ -188,21 +188,10 @@ const psicologos = {
     }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    psicologos.showUpPsicologies();
-});
-
-// Funcoes para declarar o login...
-
 // Inicializar Layout
 document.addEventListener("DOMContentLoaded", () => {
     Layout.addHeader();
     Layout.addFooter();
-})
-
-// Definindo funcoes para cadastro e login
-document.addEventListener("DOMContentLoaded", () => {
-    psicologos.showUpPsicologies();
 })
 
 // Enviando as informacoes dentro do forms de cadastro
@@ -329,7 +318,10 @@ async function loginUser(email, senha) {
             localStorage.setItem("user", JSON.stringify(userData));
 
             // Atualiza a interface ou redireciona
-            alert(`Bem-vindo(a), ${userData.nomePaciente}!`);
+            document.getElementById('access').innerHTML = 
+            `
+            <a href="${urls.userInfo}"> Minha conta</a>
+            `;
             window.location.href = urls.index;
         } else {
             const errorData = response.json();
