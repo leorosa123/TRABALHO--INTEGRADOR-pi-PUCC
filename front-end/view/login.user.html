@@ -22,6 +22,8 @@
         servicos: "{{ url_for('index') }}#Servicos",
         contato: "{{ url_for('index') }}#Contato",
         loginPage: "{{ url_for('login_page') }}",
+        login: "{{ url_for('login')}}",
+        psicologos: "{{url_for('psicologos')}}",
         cadastro: "{{ url_for('cadastro') }}",
         agendamento: "{{ url_for('agendamento') }}",
         userInfo: "{{ url_for('informacoes') }}"
@@ -32,22 +34,24 @@
      <!--Inicio do Body-->
     <!--Inicio do Body-->
     <div id="cont" class="cont">
-      <form class="form" id="loginUser" method="post" action="/login" onsubmit="handleLogin(event)">
+      <form class="form" id="loginForm" method="post" action="/login" onsubmit="handleLogin(event)">
         <p class="form-title">Acessar minha conta</p>
         <br><br>
         <div class="input-container">
             <label for="name">User</label>
-            <input id="name" name="name" type="text" placeholder="Ex: email@gmail.com ou CPF">
+            <input id="nameLogin" name="name" type="text" placeholder="Ex: email@gmail.com ou CPF">
         </div>
         <br>
         <div class="input-container">
             <label for="pass">Senha</label>
-            <input id="password" type="password" placeholder="Ex: ###-####" name="pass">
+            <input id="passLogin" type="password" placeholder="Ex: ###-####" name="pass">
         </div>
         <br><br>
         <button type="submit" class="submit">Entrar</button>
       </form>
     </div>
+
+    <footer></footers>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

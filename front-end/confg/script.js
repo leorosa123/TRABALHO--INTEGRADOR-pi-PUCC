@@ -1,3 +1,4 @@
+user = NaN
 // Objeto para o menu
 const Layout = {
     addHeader: function () {
@@ -164,7 +165,7 @@ const Usuario = {
 const psicologos = {
     showUpPsicologies: async function() {
         try {
-            const response = await fetch("http://localhost:5000/psicologos");
+            const response = await fetch(urls.psicologos);
             const profissionais = await response.json();
 
             const container = document.getElementById("psicologos");
@@ -186,15 +187,6 @@ const psicologos = {
         }
     }
 };
-
-//Verifica o Login
-// document.addEventListener("DOMContentLoaded", () => {
-//     const user = localStorage.getItem("user");
-//     if (!user) {
-//         alert("Você precisa estar logado para acessar essa página.");
-//         window.location.href = urls.loginPage;
-//     }
-// });
 
 document.addEventListener("DOMContentLoaded", () => {
     psicologos.showUpPsicologies();
@@ -306,23 +298,11 @@ function checkUserOnPageLoad() {
     return user ? 1 : 0;
 }
 
-// // Exemplo de uso ao carregar a página
-// document.addEventListener("DOMContentLoaded", () => {
-//     const userStatus = checkUserOnPageLoad();
-//     console.log(`User status: ${userStatus}`); // 0 = Não logado; 1 = Logado
-//     if (userStatus === 0) {
-//         window.location.href = "login.html"; // Redireciona para login se não logado
-//     }
-// });
-
 // Função para autenticar usuário com servidor Flask
 async function handleLogin(event) {
-    event.preventDefault();
-
     // Captura os valores do formulário
-    const email = document.getElementById("name").value;
-    const senha = document.getElementById("pass").value;
-
+    const email = document.getElementById("nameLogin").value;
+    const senha = document.getElementById("passLogin").value;
     // Chama a função loginUser com os valores capturados
     await loginUser(email, senha);
 }
@@ -342,8 +322,8 @@ async function loginUser(email, senha) {
 
         // Trata a resposta
         if (response.ok) {
-            const userData = await response.json();
-            console.log("Usuário autenticado:", userData);
+            const userData = response.json();
+            console.log("Usuário autenticado:");
 
             // Salva o usuário no localStorage
             localStorage.setItem("user", JSON.stringify(userData));
@@ -352,7 +332,7 @@ async function loginUser(email, senha) {
             alert(`Bem-vindo(a), ${userData.nomePaciente}!`);
             window.location.href = urls.index;
         } else {
-            const errorData = await response.json();
+            const errorData = response.json();
             alert(errorData.error || "Erro ao autenticar.");
             window.location.href = urls.loginPage
         }

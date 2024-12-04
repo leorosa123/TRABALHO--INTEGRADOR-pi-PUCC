@@ -51,8 +51,9 @@ def agendamento():
 def login():
     try:
         # Captura os dados do formulário HTML
-        email = request.form.get('name')
-        senha = request.form.get('pass')
+        data = request.json
+        email = data.get('email')
+        senha = data.get('senha')
 
         # Conecta ao banco de dados
         conn = get_db_connection()
