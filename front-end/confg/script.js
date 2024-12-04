@@ -1,6 +1,3 @@
-// User
-user = NaN
-
 // Objeto para o menu
 const Layout = {
     addHeader: function () {
@@ -319,12 +316,22 @@ function checkUserOnPageLoad() {
 // });
 
 // Função para autenticar usuário com servidor Flask
+async function handleLogin(event) {
+    event.preventDefault();
+
+    // Captura os valores do formulário
+    const email = document.getElementById("name").value;
+    const senha = document.getElementById("pass").value;
+
+    // Chama a função loginUser com os valores capturados
+    await loginUser(email, senha);
+}
+
 async function loginUser(email, senha) {
     try {
-        // Endpoint Flask para login
-        const url = "{{}}";
+        const url = urls.login;
 
-        // Envia as credenciais
+        // Envia as credenciais para o servidor Flask
         const response = await fetch(url, {
             method: "POST",
             headers: {
@@ -343,17 +350,18 @@ async function loginUser(email, senha) {
 
             // Atualiza a interface ou redireciona
             alert(`Bem-vindo(a), ${userData.nomePaciente}!`);
-            window.location.href = "index.html"; // Altere para a página desejada
+            window.location.href = urls.index;
         } else {
             const errorData = await response.json();
             alert(errorData.error || "Erro ao autenticar.");
+            window.location.href = urls.loginPage
         }
     } catch (error) {
         console.error("Erro na autenticação:", error);
         alert("Erro ao conectar ao servidor. Tente novamente.");
+        window.location.href = urls.loginPage;
     }
 }
-
 // Exemplo de uso: Chamando a função de login
 document.querySelector("#loginForm").addEventListener("submit", async (event) => {
     event.preventDefault(); // Previne o envio padrão do formulário

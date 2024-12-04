@@ -76,9 +76,9 @@ def login():
                 "email": email
             })
         else:
-            return render_template('index.html')
+            return jsonify({"error": "Credenciais inválidas"}), 401
     except Exception as e:
-        return render_template('index.html')
+        return jsonify({"error": str(e)}), 500
 
 # Rota para listar psicólogos (GET)
 @app.route('/psicologos', methods=['GET'])
