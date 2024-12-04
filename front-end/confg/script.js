@@ -1,5 +1,8 @@
 user = NaN
 // Objeto para o menu
+async function logout(){
+    user = NaN
+}
 const Layout = {
     addHeader: function () {
         const headerElement = document.querySelector("header");
@@ -21,6 +24,12 @@ const Layout = {
                         <a href="${urls.cadastro}" class="Cadastro">/ Cadastro</a>
                     </div>
                 </header>
+            `;
+        }
+        if (user != NaN){
+            document.getElementById('access').innerHTML = 
+            `
+            <a href="${urls.userInfo}"> Minha conta</a>
             `;
         }
     },
@@ -318,10 +327,6 @@ async function loginUser(email, senha) {
             localStorage.setItem("user", JSON.stringify(userData));
 
             // Atualiza a interface ou redireciona
-            document.getElementById('access').innerHTML = 
-            `
-            <a href="${urls.userInfo}"> Minha conta</a>
-            `;
             window.location.href = urls.index;
         } else {
             const errorData = response.json();
