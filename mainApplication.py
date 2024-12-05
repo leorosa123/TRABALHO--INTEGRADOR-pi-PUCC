@@ -146,17 +146,28 @@ def psicologos():
 def agendar():
     try:
         data = request.json
+        print("Dados recebidos para agendamento:", data)
+        psicologo_id = data['psicologoID']
+        horario = data['dataHoraConsulta']
+
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO consulta (pacienteID, psicologoID, dataHoraConsulta)
-            VALUES (%s, %s, %s)
-        """, (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
+
+        # Verifica se o usuário já tem 5 consultas
+        cursor.execute("SELECT COUNT(*) AS total FROM consultas WHERE pacienteID = %s", (data['pacienteID'],))
+        consultas = cursor.fetchone()['total']
+        if consultas >= 5:
+            return jsonify({"error": "Você já atingiu o limite de 5 consultas."}), 400
+
+        # Agenda a consulta
+        cursor.execute(
+            "INSERT INTO consultas (pacienteID, psicologoID, dataHoraConsulta) VALUES (%s, %s, %s)",
+            (data['pacienteID'], psicologo_id, horario)
+        )
         conn.commit()
-        conn.close()
-        return 1
+        return jsonify({"mensagem": "Consulta marcada com sucesso!"})
     except Exception as e:
-        return 0
+        return jsonify({"error": str(e)}), 500
 
 # Rota para cadastrar novo usuário (POST)
 
