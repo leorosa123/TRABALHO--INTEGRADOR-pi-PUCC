@@ -11,6 +11,7 @@
     <link rel="stylesheet"href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
     <link rel="icon" href="{{url_for('static', filename = 'S.A.D.png')}}" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='home-estilos.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='psicologos.css')}}">
     <script src="{{url_for('static', filename='script.js')}}"></script>
 
   
@@ -26,11 +27,139 @@
           loginPage: "{{ url_for('login_page') }}",
           cadastro: "{{ url_for('cadastro') }}",
           agendamento: "{{ url_for('agendamento') }}",
-          userInfo: "{{ url_for('informacoes') }}"
+          userInfo: "{{ url_for('informacoes') }}",
+          psicologa: "{{url_for('static', filename = 'psicologa.jpg')}}",
+          psicologos: "{{url_for('psicologos')}}"
       };
       </script>
     <header></header>
-    <div id="psicologos"></div>
+    <div class="container mt-5" id="cards-container">
+      <!-- Os cards dos psicólogos serão carregados aqui -->
+    </div>
+
+  <footer class="text-center mt-5 bg-body-tertiary text-muted" id="Contato"></footer>
+
+  <!-- JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+      // Função para buscar os psicólogos do backend e exibi-los
+      async function showPsicologos() {
+          try {
+              const response = await fetch(urls.psicologos);
+              if (!response.ok) throw new Error("Erro ao buscar dados dos psicólogos");
+
+              const psicologos = await response.json();
+              if (psicologos === 'title') {
+                container.innerHTML = `<h3 class="titlePsicologos">Não há psicólogos disponíveis</h3>`;
+              }
+              else{criarCards(psicologos);}
+          } catch (error) {
+              console.error("Erro ao carregar psicólogos:", error);
+          }
+      }
+
+      // Função para criar os cards de psicólogos
+      function criarCards(psicologos) {
+          const container = document.getElementById('cards-container');
+          container.innerHTML = ""; // Limpa o container antes de criar novos cards
+
+          psicologos.forEach(psicologo => {
+              const card = document.createElement('div');
+              card.className = 'card';
+
+              const img = document.createElement('img');
+              img.src = psicologo.foto || "https://via.placeholder.com/80"; // Foto padrão se não existir
+              img.alt = `Foto de ${psicologo.nome}`;
+
+              const content = document.createElement('div');
+              content.className = 'card-content';
+
+              const nome = document.createElement('h3');
+              nome.textContent = psicologo.nome;
+
+              const especialidade = document.createElement('p');
+              especialidade.textContent = `Especialidade: ${psicologo.especialidade}`;
+
+              const descricao = document.createElement('p');
+              descricao.textContent = psicologo.descricao || "Sem descrição disponível.";
+
+              const buttonsContainer = document.createElement('div');
+              buttonsContainer.className = 'card-buttons';
+
+              psicologo.horarios.forEach(horario => {
+                  const button = document.createElement('button');
+                  button.className = 'horario';
+                  button.textContent = horario.hora;
+                  button.dataset.id = horario.id;
+                  button.dataset.livre = horario.livre;
+
+                  // Estilo inicial baseado no status do horário
+                  if (horario.livre) {
+                      button.style.backgroundColor = "#007bff"; // Disponível
+                  } else {
+                      button.style.backgroundColor = "#dc3545"; // Ocupado
+                      button.disabled = true; // Desabilita se não estiver disponível
+                  }
+
+                  // Evento ao clicar em um horário
+                  button.addEventListener('click', () => {
+                      if (button.classList.contains('marcado')) {
+                          alert("Consulta já marcada!");
+                      } else {
+                          marcarConsulta(horario.id, psicologo.id);
+                          button.classList.add('marcado');
+                          button.style.backgroundColor = "#28a745"; // Verde
+                      }
+                  });
+
+                  buttonsContainer.appendChild(button);
+              });
+
+              // Monta o card
+              content.appendChild(nome);
+              content.appendChild(especialidade);
+              content.appendChild(descricao);
+              content.appendChild(buttonsContainer);
+              card.appendChild(img);
+              card.appendChild(content);
+              container.appendChild(card);
+          });
+      }
+
+      // Função para marcar consulta
+      async function marcarConsulta(horarioId, psicologoId) {
+          const user = JSON.parse(localStorage.getItem("user")); // Obtém o usuário logado
+          if (!user) {
+              alert("Você precisa estar logado para agendar uma consulta.");
+              return;
+          }
+
+          try {
+              const response = await fetch(urls.agendar, {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                      pacienteID: user.id,
+                      psicologoID: psicologoId,
+                      dataHoraConsulta: horarioId,
+                  }),
+              });
+
+              if (!response.ok) throw new Error("Erro ao agendar consulta");
+              alert("Consulta marcada com sucesso!");
+          } catch (error) {
+              console.error("Erro ao agendar consulta:", error);
+              alert("Erro ao tentar marcar a consulta.");
+          }
+      }
+
+      // Carrega os psicólogos ao abrir a página
+      document.addEventListener("DOMContentLoaded", showPsicologos);
+    </script>
     <footer class="text-center text-lg-start bg-body-tertiary text-muted" id="Contato"></footer>
   
       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

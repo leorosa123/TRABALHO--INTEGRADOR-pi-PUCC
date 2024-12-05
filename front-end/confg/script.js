@@ -1,8 +1,16 @@
-user = NaN
+// Objeto para autenticação
+const Auth = {
+    login: function (userData) {
+        localStorage.setItem("user", JSON.stringify(userData));
+        window.location.href = urls.index; 
+    },
+    logout: function () {
+        localStorage.removeItem("user");
+        window.location.href = urls.index; 
+    },
+};
+
 // Objeto para o menu
-async function logout(){
-    user = NaN
-}
 const Layout = {
     addHeader: function () {
         const headerElement = document.querySelector("header");
@@ -12,12 +20,11 @@ const Layout = {
                     <a href="${urls.index}" class="logo">
                         <img src="../confg/S.A.D.png" alt="S.A.D Logo" width="120">
                     </a>
-                    <ul class="navbar">
+                    <ul class="navbar" id="navBarMenu">
                         <li><a href="${urls.index}" class="active">Home</a></li>
                         <li><a href="${urls.sobre}">Sobre Nós</a></li>
                         <li><a href="${urls.servicos}">Serviços</a></li>
                         <li><a href="${urls.contato}">Contato</a></li>
-                        <li><a href="${urls.agendamento}"><button>Agendamentos</button></a></li>
                     </ul>
                     <div class="main-acessos" id="access">
                         <a href="${urls.loginPage}" class="login"><i class="ri-user-fill"></i>Login</a>
@@ -26,11 +33,18 @@ const Layout = {
                 </header>
             `;
         }
-        if (user != NaN){
-            document.getElementById('access').innerHTML = 
-            `
-            <a href="${urls.userInfo}"> Minha conta</a>
-            `;
+        const user = localStorage.getItem('user')
+        if (user){
+            document.getElementById("navBarMenu").innerHTML= `
+            <li><a href="${urls.index}" class="active">Home</a></li>
+            <li><a href="${urls.sobre}">Sobre Nós</a></li>
+            <li><a href="${urls.servicos}">Serviços</a></li>
+            <li><a href="${urls.contato}">Contato</a></li>
+            <li><a href="${urls.agendamento}"><button>Agendamentos</button></a></li>`
+            document.getElementById("access").innerHTML = `
+            <a href="${urls.userInfo}">Conta</a>
+            <a onclick="Auth.logout()">/ logout</a>
+            `        
         }
     },
     addFooter: function() {
@@ -133,20 +147,6 @@ const Layout = {
             </footer>
             <!-- Footer -->
         `;
-    }
-};
-
-// Objeto para autenticação
-const Auth = {
-    login: function (userData) {
-        localStorage.setItem("user", JSON.stringify(userData));
-        Layout.addHeader();
-        window.location.href = urls.index; 
-    },
-    logout: function () {
-        localStorage.removeItem("user");
-        Layout.addHeader();
-        window.location.href = urls.loginPage; 
     },
 };
 
@@ -169,40 +169,11 @@ const Usuario = {
         return response.json();
     }
 };
-
-// Exibindo os psicologos
-const psicologos = {
-    showUpPsicologies: async function() {
-        try {
-            const response = await fetch(urls.psicologos);
-            const profissionais = await response.json();
-
-            const container = document.getElementById("psicologos");
-            if (profissionais.length === 0) {
-                container.innerHTML = "<h1>Não há psicólogos disponíveis.</h1>";
-            } else {
-                profissionais.forEach((psicologo) => {
-                    const card = `
-                        <div class="psicologo-card">
-                            <h3>${psicologo.nome}</h3>
-                            <p>${psicologo.especialidade}</p>
-                            
-                        </div>`;
-                    container.innerHTML += card;
-                });
-            }
-        } catch (error) {
-            console.error("Erro ao carregar psicólogos:", error);
-        }
-    }
-};
-
 // Inicializar Layout
 document.addEventListener("DOMContentLoaded", () => {
     Layout.addHeader();
     Layout.addFooter();
 })
-
 // Enviando as informacoes dentro do forms de cadastro
 // Função para validar os campos do formulário
 function validateForm(formData) {
@@ -296,7 +267,7 @@ function checkUserOnPageLoad() {
     return user ? 1 : 0;
 }
 
-// Função para autenticar usuário com servidor Flask
+// Login e autenticacao
 async function handleLogin(event) {
     // Captura os valores do formulário
     const email = document.getElementById("nameLogin").value;
@@ -329,8 +300,7 @@ async function loginUser(email, senha) {
             // Atualiza a interface ou redireciona
             window.location.href = urls.index;
         } else {
-            const errorData = response.json();
-            alert(errorData.error || "Erro ao autenticar.");
+            alert("Algo esta errado com o login.");
             window.location.href = urls.loginPage
         }
     } catch (error) {

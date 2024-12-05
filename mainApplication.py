@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template
+from datetime import datetime, timedelta
 import pymysql
 
 # Configuração do Flask
@@ -10,7 +11,7 @@ def get_db_connection():
         host='localhost',
         user='root',
         password='',
-        database='bancodedadoshope',
+        database='BancoDeDadosHope',
         cursorclass=pymysql.cursors.DictCursor
     )
     
@@ -82,15 +83,61 @@ def login():
         return jsonify({"error": str(e)}), 500
 
 # Rota para listar psicólogos (GET)
-@app.route('/psicologos', methods=['GET'])
-def get_psicologos():
+@app.route('/psicologos', methods=['GET', 'POST'])
+def psicologos():
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT * FROM psicologos")
+        cursor.execute("""
+            SELECT DATE_FORMAT(dataHoraConsulta, '%H:%i') AS horaCompleta FROM consultas;
+        """)
+        horarios = cursor.fetchall()
+        conn.close()
+    except:
+        horarios = []
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT pc.psicologoID, pc.nomePsicologo, pc.especialidade, 
+                   pc.descricao, pc.horarioDeAtendimento 
+            FROM psicologos pc
+        """)
         psicologos = cursor.fetchall()
         conn.close()
-        return jsonify(psicologos)
+        if psicologos:
+            # Itera sobre a lista de psicólogos e formata os dados
+            resultado = []
+            for psico in psicologos:
+                # Processa os horários no formato legível
+                raw_horarios = psico["horarioDeAtendimento"]
+                horarios_formatados = []
+                for i in range(0, len(raw_horarios), 8):
+                    inicio_hora = raw_horarios[i:i + 2]
+                    inicio_minuto = raw_horarios[i + 2:i + 4]
+                    termino_hora = raw_horarios[i + 4:i + 6]
+                    termino_minuto = raw_horarios[i + 6:i + 8]
+                horarios_formatados = []
+                inicio = datetime.strptime(f"{inicio_hora}:{inicio_minuto}", "%H:%M")
+                termino = datetime.strptime(f"{termino_hora}:{termino_minuto}", "%H:%M")
+                atual = inicio
+
+                while atual < termino:
+                    if atual.strftime("%H:%M") not in horarios:
+                        horarios_formatados.append(atual.strftime("%H:%M"))
+                        atual += timedelta(minutes=30)
+
+                resultado.append({
+                    "psicologoID": psico["psicologoID"],
+                    "nome": psico["nomePsicologo"],
+                    "especialidade": psico["especialidade"],
+                    "descricao": psico["descricao"],
+                    "horarios": horarios_formatados
+                })
+
+            return jsonify(resultado)
+        else:
+            return jsonify({"error": "title"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -107,9 +154,9 @@ def agendar():
         """, (data['pacienteID'], data['psicologoID'], data['dataHoraConsulta']))
         conn.commit()
         conn.close()
-        return render_template('index.html')
+        return 1
     except Exception as e:
-        return render_template('index.html')
+        return 0
 
 # Rota para cadastrar novo usuário (POST)
 
@@ -184,14 +231,6 @@ def atualizarDados():
 # Executar o servidor
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
-
-# Se pessoa sem login
-# --> Nao pode ir para nenhuma tela alem de login e cadastro
-
-# Assim que a pessoa logar
-# Desbloquear o restante das telas
-# --> conectar para as informacoes do user e liberar o link de alterar conta no lugar do login e do cadastro
-# --> cadastro vira logout e login vira o primeiro nome da pessoa( ao clicar leva para o alterador de informacoes )
 
 # Exibir os psicologos que estao dentro do banco na tela assim que a pagina de agentementos abrir
 
