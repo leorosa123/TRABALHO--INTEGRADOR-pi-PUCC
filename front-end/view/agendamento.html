@@ -81,7 +81,7 @@
                         <h5 class="card-title">${psicologo.nome}</h5>
                         <p class="card-text">${psicologo.especialidade}</p>
                         <p>${psicologo.descricao}</p>
-                        <select class="form-select" id="horarios-${psicologo.psicologoID}">
+                        <select class="form-select" method="POST" id="horarios-${psicologo.psicologoID}">
                             ${psicologo.horarios.map(horario => `<option value="${horario}">${horario}</option>`).join('')}
                         </select>
                         <button class="btn btn-primary mt-2" onclick="marcarConsulta('${psicologo.psicologoID}')" method="POST">Marcar Consulta</button>
@@ -101,13 +101,6 @@
             alert("Selecione um horário para marcar a consulta.");
             return;
         }
-
-        // Adicionando a data atual ao horário selecionado
-        const hoje = new Date();
-        const dia = String(hoje.getDate()).padStart(2, '0');
-        const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // Janeiro é 0
-        const ano = hoje.getFullYear();
-        const dataCompleta = `${ano}-${mes}-${dia} ${horarioSelecionado}:00`; // Formato final: YYYY-MM-DD HH:mm:ss
 
         try {
             const response = await fetch(urls.agendar, {
